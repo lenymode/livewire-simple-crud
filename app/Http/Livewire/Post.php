@@ -13,7 +13,7 @@ class Post extends Component
      * delete action listener
      */
     protected $listeners = [
-        'deletePostListner'=>'deletePost'
+        'deletePostListener' => 'deletePost'
     ];
 
     /**
@@ -28,13 +28,14 @@ class Post extends Component
      * Reseting all inputted fields
      * @return void
      */
-    public function resetFields(){
+    public function resetFields()
+    {
         $this->title = '';
         $this->description = '';
     }
 
     /**
-     * render the post data
+     * Render the post data
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
     public function render()
@@ -53,10 +54,11 @@ class Post extends Component
         $this->addPost = true;
         $this->updatePost = false;
     }
-     /**
-      * store the user inputted post data in the posts table
-      * @return void
-      */
+
+    /**
+     * Store the user inputted post data in the posts table
+     * @return void
+     */
     public function storePost()
     {
         $this->validate();
@@ -65,24 +67,25 @@ class Post extends Component
                 'title' => $this->title,
                 'description' => $this->description
             ]);
-            session()->flash('success','Post Created Successfully!!');
+            session()->flash('success', 'Post Created Successfully!!');
             $this->resetFields();
             $this->addPost = false;
         } catch (\Exception $ex) {
-            session()->flash('error','Something goes wrong!!');
+            session()->flash('error', 'Something went wrong!!');
         }
     }
 
     /**
-     * show existing post data in edit post form
+     * Show existing post data in edit post form
      * @param mixed $id
      * @return void
      */
-    public function editPost($id){
+    public function editPost($id)
+    {
         try {
             $post = Posts::findOrFail($id);
-            if( !$post) {
-                session()->flash('error','Post not found');
+            if (!$post) {
+                session()->flash('error', 'Post not found');
             } else {
                 $this->title = $post->title;
                 $this->description = $post->description;
@@ -91,13 +94,12 @@ class Post extends Component
                 $this->addPost = false;
             }
         } catch (\Exception $ex) {
-            session()->flash('error','Something goes wrong!!');
+            session()->flash('error', 'Something went wrong!!');
         }
-
     }
 
     /**
-     * update the post data
+     * Update the post data
      * @return void
      */
     public function updatePost()
@@ -108,11 +110,11 @@ class Post extends Component
                 'title' => $this->title,
                 'description' => $this->description
             ]);
-            session()->flash('success','Post Updated Successfully!!');
+            session()->flash('success', 'Post Updated Successfully!!');
             $this->resetFields();
             $this->updatePost = false;
         } catch (\Exception $ex) {
-            session()->flash('success','Something goes wrong!!');
+            session()->flash('success', 'Something went wrong!!');
         }
     }
 
@@ -128,17 +130,19 @@ class Post extends Component
     }
 
     /**
-     * delete specific post data from the posts table
+     * Delete specific post data from the posts table
      * @param mixed $id
      * @return void
      */
     public function deletePost($id)
     {
-        try{
-            Posts::find($id)->delete();
-            session()->flash('success',"Post Deleted Successfully!!");
-        }catch(\Exception $e){
-            session()->flash('error',"Something goes wrong!!");
+        if (confirm('Are you sure you want to delete this post?')) {
+            try {
+                Posts::find($id)->delete();
+                session()->flash('success', "Post Deleted Successfully!!");
+            } catch (\Exception $e) {
+                session()->flash('error', "Something went wrong!!");
+            }
         }
     }
 }
